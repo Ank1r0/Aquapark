@@ -1,45 +1,54 @@
 #pragma once
 #include "vector";
-
+#include "unordered_map"
+#include "sstream";
 using namespace std;
 
 class Aquapark
 {
 public:
 
+	class Subscription {
+	public:
+		int id_;
+		int balance_;
+		bool isActive = false;
+		Subscription(int _id, int _balance)
+		{
+			id_ = _id;
+			balance_ = _balance;
+		}
+		~Subscription() {}
+	};
+
 	class Ticket {
 	public:
 		int id_;
-		bool temp_;
-		int balance_;
 		char tariff_;
+		bool used = false;
+		bool isActive = false;
 
-		Ticket(int _id, bool _temp,char _tariff){
-			id_ = _id;
-			temp_ = _temp;
+		Ticket(int _id,char _tariff){
+			id_ = _id;			
 			tariff_ = _tariff;
-			balance_ = -1;
 		}
 		~Ticket(){}
-	};
-	
-	class Session {
-	public:
-		int in_;
-		int id_;
 
-		Session(int id, int time)
-		{
-			in_ = time;
-			id_ = id;
+		friend std::ostream& operator<<(std::ostream& os, const Ticket& obj) {
+			return os << obj.toString();
 		}
-		~Session(){}
+
+		string toString() const {
+			std::ostringstream s;
+			s << "Ticket [ID: " << id_ << ", Tariff: " << tariff_ << "]";
+			return s.str();
+		}
 	};
 
-	
+	unordered_map<int,Subscription> subscriptions;
+	unordered_map<int, Ticket> tickets;
 
-	vector<Ticket> tickets;
-	vector<Session> active;
+	int totalM = 0;
 
 	void run();
 
@@ -47,9 +56,10 @@ public:
 	char getPass(int id);
 	char into(int id);
 	char out(int id);
-	char listAll();
+	void listAll();
 	int avg();
 	void intMenu();
+	void test();
 
 	void end();
 	
